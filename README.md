@@ -18,3 +18,4 @@ Content of the repository
 1. README file
 2. Project code - Title: CIND 820 Capstone R Code.R
 3. Working dataset - Title: estimate_hist_metric.csv
+4. Data visualizations - 6 different visualizations of the data explored in this project so far
