@@ -118,9 +118,9 @@ summary(multiple_lr_model)
 #Create a plot with dual y-axes, in order to demonstrate the relative correlations
 ggplot(data, aes(x = Lagged_Price_per_bu)) +
   geom_point(aes(y = Harv_area_ac, color = "Harvested Area"), size = 3) +
-  geom_point(aes(y = Production_000bu, color = "Production"), size = 3) + 
+  geom_point(aes(y = Production_000bu*10, color = "Production"), size = 3) + 
   geom_abline(intercept = coef(simple_lr_model_ac)[1], slope = coef(simple_lr_model_ac)[2], color = "red") +
-  geom_abline(intercept = coef(simple_lr_model_prod)[1], slope = coef(simple_lr_model_prod)[2], color = "blue") +
+  geom_abline(intercept = coef(simple_lr_model_prod)[1]*10, slope = coef(simple_lr_model_prod)[2]*10, color = "blue") +
   scale_y_continuous(
     name = "Harvested Area (acres)",
     sec.axis = sec_axis(~./10, name = "Production ('000bu)"),
