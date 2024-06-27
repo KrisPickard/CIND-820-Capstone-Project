@@ -16,5 +16,5 @@ Project next steps:
 
 Content of the repository
 1. README file
-2. Project code
-3. Working dataset
+2. Project code - Title: CIND 820 Capstone R Code.R
+3. Working dataset - Title: estimate_hist_metric.csv
