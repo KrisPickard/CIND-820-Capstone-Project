@@ -131,11 +131,6 @@ summary(multiple_lr_model_ac)
 multiple_lr_model_prod <- lm(Production_000bu~Lagged_Price_per_bu+Lagged_Harv_area_ac+Lagged_Yield_per_ac, data=data)
 summary(multiple_lr_model_prod) #This one is not a good comparison - of course the overall production would be a good predictor of the yield per acre
 
-#~~~ Additional models - KNN regression for example, or regression trees, random forest - need 3 in total - have linear regression already which counts as 1
-#~~~ Design - run the models, then compare via R^2 etc.
-#~~~ Consider cross-validation on the training set, 10fold cross-validation for example (on the training set), and report the cross-validation results on the training set, final results on the test set
-#~~~ The results include the p-value, LR vs. decision trees vs. KNN - Evaluation measures - RMSE (root-mean-square-error) - AIC - R^2 - use at least one for this submission
-
 #Create a plot with dual y-axes, in order to demonstrate the relative correlations
 ggplot(data, aes(x = Lagged_Price_per_bu)) +
   geom_point(aes(y = Harv_area_ac, color = "Harvested Area"), size = 3) +
