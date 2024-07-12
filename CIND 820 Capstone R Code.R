@@ -56,21 +56,21 @@ par(mfrow = c(1, 3))
 #Boxplot for Harvested Area
 boxplot(data$Harv_area_ac,
         main = "Boxplot of Harvested Area",
-        ylab = "Harvested Area (acres)",
+        ylab = "Harvested Area (ac)",
         col = "lightblue",
         outline = TRUE)
 
 #Boxplot for Price per bu
 boxplot(data$Price_per_bu,
-        main = "Boxplot of Price per Unit (previous year)",
-        ylab = "Price per Unit (bushel)",
+        main = "Boxplot of Price per Unit",
+        ylab = "Price per Unit (bu)",
         col = "lightgreen",
         outline = TRUE)
 
 #Boxplot for Production
 boxplot(data$Production_000bu,
-        main = "Boxplot of Price per Unit (previous year)",
-        ylab = "Price per Unit (bushel)",
+        main = "Boxplot of Production",
+        ylab = "Production ('000bu)",
         col = "red",
         outline = TRUE)
 
@@ -130,6 +130,11 @@ summary(multiple_lr_model_ac)
 
 multiple_lr_model_prod <- lm(Production_000bu~Lagged_Price_per_bu+Lagged_Harv_area_ac+Lagged_Yield_per_ac, data=data)
 summary(multiple_lr_model_prod) #This one is not a good comparison - of course the overall production would be a good predictor of the yield per acre
+
+#~~~ Additional models - KNN regression for example, or regression trees, random forest - need 3 in total - have linear regression already which counts as 1
+#~~~ Design - run the models, then compare via R^2 etc.
+#~~~ Consider cross-validation on the training set, 10fold cross-validation for example (on the training set), and report the cross-validation results on the training set, final results on the test set
+#~~~ The results include the p-value, LR vs. decision trees vs. KNN - Evaluation measures - RMSE (root-mean-square-error) - AIC - R^2 - use at least one for this submission
 
 #Create a plot with dual y-axes, in order to demonstrate the relative correlations
 ggplot(data, aes(x = Lagged_Price_per_bu)) +
@@ -214,14 +219,65 @@ test_data_norm <- as.data.frame(lapply(test_set[, -8], normalize))
 train_labels <- train_set$Harv_area_ac
 test_labels <- test_set$Harv_area_ac
 
-k <- 3 #k=3 selected... why?
-knn_model <- knnreg(x = train_data_norm, y = train_labels, k = k)
-knn_pred <- predict(knn_model, test_data_norm)
+k <- 1 
+knn_model1 <- knnreg(x = train_data_norm, y = train_labels, k = k)
+knn_pred1 <- predict(knn_model1, test_data_norm)
 summary(knn_pred)
 
 #Assess the model
-rmse_knn <- sqrt(mean((knn_pred - test_labels)^2))
+rmse_knn1 <- sqrt(mean((knn_pred1 - test_labels)^2))
 print(paste("Root Mean Squared Error:", rmse_knn))
+
+k <- 2 
+knn_model2 <- knnreg(x = train_data_norm, y = train_labels, k = k)
+knn_pred2 <- predict(knn_model2, test_data_norm)
+summary(knn_pred)
+
+#Assess the model
+rmse_knn2 <- sqrt(mean((knn_pred2 - test_labels)^2))
+print(paste("Root Mean Squared Error:", rmse_knn))
+
+k <- 3 
+knn_model3 <- knnreg(x = train_data_norm, y = train_labels, k = k)
+knn_pred3 <- predict(knn_model3, test_data_norm)
+summary(knn_pred)
+
+#Assess the model
+rmse_knn3 <- sqrt(mean((knn_pred3 - test_labels)^2))
+print(paste("Root Mean Squared Error:", rmse_knn))
+
+k <- 4 
+knn_model4 <- knnreg(x = train_data_norm, y = train_labels, k = k)
+knn_pred4 <- predict(knn_model4, test_data_norm)
+summary(knn_pred)
+
+#Assess the model
+rmse_knn4 <- sqrt(mean((knn_pred4 - test_labels)^2))
+print(paste("Root Mean Squared Error:", rmse_knn))
+
+k <- 5 
+knn_model5 <- knnreg(x = train_data_norm, y = train_labels, k = k)
+knn_pred5 <- predict(knn_model5, test_data_norm)
+summary(knn_pred)
+
+#Assess the model
+rmse_knn5 <- sqrt(mean((knn_pred5 - test_labels)^2))
+print(paste("Root Mean Squared Error:", rmse_knn))
+
+#Elbow method to select best k value
+rmse_values <- c(rmse_knn1, rmse_knn2, rmse_knn3, rmse_knn4, rmse_knn5)
+k_values <- 1:5
+plot_knn_elbow <- data.frame(k = k_values, RMSE = rmse_values)
+ggplot(plot_knn_elbow, aes(x = k, y = rmse_values)) +
+  geom_line(color = "blue") +
+  labs(title = "KNN Regression Results", x = "Actual Harv Area (ac)", y = "Predicted Harv Area (ac)")+
+  theme_minimal()
+
+#k = 3 gives the best results
+k <- 3
+knn_model <- knnreg(x = train_data_norm, y = train_labels, k = k)
+knn_pred <- predict(knn_model, test_data_norm)
+summary(knn_pred)
 
 #Visualize the results
 plot_knn <- data.frame(Actual = test_labels, Predicted = knn_pred)
@@ -264,3 +320,4 @@ colnames(assessment_data) <- c("Model_Name","RMSE")
 assessment_data$RMSE <- c(rmse_area, rmse_prod, rmse_multi, rmse_knn, rmse_tree)
 assessment_data$Model_Name <- c("Single LR - Area", "Single LR - Prod", "Multiple LR", "KNN (k=3)", "Regression Tree")
 #Based on the RMSE comparison, the regression tree has the greatest predictability out of all of the models tested
+
